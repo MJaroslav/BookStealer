@@ -9,7 +9,7 @@ Minecraft client mod for book content saving. For saving the book, open it and c
   value). `%MINECRAFT%/books` as default.
 - `book_file_format` — book file name pattern, you can use `%TITLE%`, `%AUTHOR%` and `%DATE%` for
   autoreplacing. `%TITLE%_%AUTHOR%_%DATE%.txt` as default.
-- `date_format` — date format for %DATE% in book file name. Uses formatting from SimpleDateFormat. `yyyy-MM-dd_hh-mm` as
+- `date_format` — date format for `%DATE%` in book file name. Uses formatting from SimpleDateFormat. `yyyy-MM-dd_hh-mm` as
   default.
 
 ## Porting on other versions and other questions
