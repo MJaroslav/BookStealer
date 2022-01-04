@@ -5,7 +5,7 @@ import lombok.val;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,14 +17,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ModUtils {
-    public static void addChatMessage(@NotNull IChatComponent message) {
-        val player = Minecraft.getMinecraft().thePlayer;
-        if (player != null) player.addChatMessage(message);
+    public static void addChatMessage(@NotNull ITextComponent message) {
+        val player = Minecraft.getMinecraft().player;
+        if (player != null) player.sendMessage(message);
     }
 
     public static void overrideConfigValues() {
         val session = Minecraft.getMinecraft().getSession();
-        if (session == null) return;
         val username = session.getUsername();
         if ("MJaroslav".equals(username)) BookStealerMod.getConfig().setRudeText(true);
     }
@@ -36,7 +35,7 @@ public class ModUtils {
 
     @NotNull
     private static String getMinecraftDir() {
-        return Minecraft.getMinecraft().mcDataDir.toString();
+        return Minecraft.getMinecraft().gameDir.toString();
     }
 
     @NotNull
@@ -58,8 +57,9 @@ public class ModUtils {
 
     @Nullable
     public static Path saveBook(@Nullable ItemStack book) throws Exception {
-        if (book == null || !book.hasTagCompound()) return null;
+        if (book == null) return null;
         val nbt = book.getTagCompound();
+        if (nbt == null) return null;
         val author = !nbt.hasKey("author", 8) ? "Unknown" : nbt.getString("author");
         val title = !nbt.hasKey("title", 8) ? "Unknown" : nbt.getString("title");
         val path = getBookPath(author, title);
@@ -67,10 +67,10 @@ public class ModUtils {
         if (nbt.hasKey("pages", 9)) {
             val list = nbt.getTagList("pages", 8);
             for (int i = 0; i < list.tagCount(); i++)
-                builder.append("\n\n").append(list.getStringTagAt(i));
+                builder.append("\n").append(list.getStringTagAt(i));
         }
-        val text = builder.length() == 0 ? "\n\nBook is empty!" : builder.toString();
-        FileUtils.write(path.toFile(), String.format("Title: %s\nAuthor: %s%s", title, author, text),
+        val text = builder.length() == 0 ? "\nBook is empty!" : builder.toString();
+        FileUtils.write(path.toFile(), String.format("Title: %s\nAuthor: %s\nPages NBT:%s", title, author, text),
                 StandardCharsets.UTF_8);
         return path;
     }

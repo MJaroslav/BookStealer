@@ -1,9 +1,10 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
         maven {
-            name 'jitpack'
-            url 'https://jitpack.io'
+            name 'forge'
+            url 'https://maven.minecraftforge.net/'
         }
         maven {
             name = "github"
@@ -11,29 +12,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.github.MJaroslav:ForgeGradle:FG_1.2-patch-1-SNAPSHOT' // Temporary
+        classpath 'net.minecraftforge.gradle:ForgeGradle2:[2.3-1.0.0-SNAPSHOT,)'
     }
-}
-
-repositories {
-    maven {
-        name 'ProfMobius Repo'
-        url 'http://mobiusstrip.eu/maven'
-    }
-    maven {
-        name 'ChickenBones Repo'
-        url 'https://chickenbones.net/maven/'
-    }
-    maven {
-        name 'jitpack'
-        url 'https://jitpack.io'
-    }
-    mavenCentral()
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 def modprop = new Properties()
 file("mod.properties").withInputStream { modprop.load(it) }
@@ -49,16 +34,13 @@ group = modprop.group
 archivesBaseName = modprop.name
 
 minecraft {
-    version = "${buildprop.game_version}-${buildprop.forge_version}-${buildprop.game_version}"
+    version = "${buildprop.game_version}-${buildprop.forge_version}"
     runDir = buildprop.run_dir
     replace '@VERSION@', project.version
+    mappings = buildprop.mappings
 }
 
 dependencies {
-    compile "codechicken:CodeChickenLib:${buildprop.ccl_version}:dev"
-    compile "codechicken:CodeChickenCore:${buildprop.ccc_version}:dev"
-    compile "codechicken:NotEnoughItems:${buildprop.nei_version}:dev"
-    compile "mcp.mobius.waila:Waila:${buildprop.waila_version}"
     compile "org.jetbrains:annotations:${buildprop.jba_version}"
 
     compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"

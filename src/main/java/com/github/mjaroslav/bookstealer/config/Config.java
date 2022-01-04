@@ -1,14 +1,14 @@
 package com.github.mjaroslav.bookstealer.config;
 
 import com.github.mjaroslav.bookstealer.lib.ModInfo;
-import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import lombok.Getter;
 import lombok.val;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -20,7 +20,7 @@ public class Config {
 
     public Config(@NotNull File file) {
         this.cfg = new Configuration(file, "1.7.10-1");
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private Property rudeText;
@@ -96,12 +96,12 @@ public class Config {
     }
 
     @UnknownNullability
-    public ConfigElement<?> getConfigCategory(@NotNull String category) {
-        return new ConfigElement<>(cfg.getCategory(category));
+    public ConfigElement getConfigCategory(@NotNull String category) {
+        return new ConfigElement(cfg.getCategory(category));
     }
 
     @SubscribeEvent
-    public void onOnConfigChangedEvent(OnConfigChangedEvent event) {
-        if (ModInfo.MOD_ID.equals(event.modID)) saveConfiguration();
+    public void onOnConfigChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
+        if (ModInfo.MOD_ID.equals(event.getModID())) saveConfiguration();
     }
 }
