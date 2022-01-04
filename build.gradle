@@ -44,9 +44,9 @@ file("build.properties").withInputStream { buildprop.load(it) }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = modprop.version
+version = "${buildprop.game_version}-${modprop.version}"
 group = modprop.group
-archivesBaseName = "${buildprop.game_version}-${modprop.name}"
+archivesBaseName = modprop.name
 
 minecraft {
     version = "${buildprop.game_version}-${buildprop.forge_version}-${buildprop.game_version}"
@@ -59,6 +59,7 @@ dependencies {
     compile "codechicken:CodeChickenCore:${buildprop.ccc_version}:dev"
     compile "codechicken:NotEnoughItems:${buildprop.nei_version}:dev"
     compile "mcp.mobius.waila:Waila:${buildprop.waila_version}"
+    compile "org.jetbrains:annotations:${buildprop.jba_version}"
 
     compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
@@ -68,7 +69,8 @@ dependencies {
 }
 
 processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // mcmod.info expand don't work with EXCLUDE option
+    // duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     includeEmptyDirs = false
     inputs.property 'version', project.version
     inputs.property 'mcversion', project.minecraft.version

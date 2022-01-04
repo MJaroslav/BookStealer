@@ -1,2 +1,9 @@
 bookstealer.button.save.text=Сохранить книгу
 bookstealer.button.save.text.rude=Спиздить!
+bookstealer.text.save.done=Книга сохранена как
+bookstealer.text.save.empty=Книга пуста!
+bookstealer.text.save.error=Не удается сохранить книгу! Смотрите журнал для подробной информации...
+bookstealer.config.rude_text=Грубый текст
+bookstealer.config.save_dir=Директория сохрарения книг
+bookstealer.config.book_file_format=Шаблон файла книги
+bookstealer.config.date_format=Формата времени
