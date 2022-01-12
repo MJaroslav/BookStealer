@@ -1,0 +1,12 @@
+{
+  "bookstealer.button.save.text": "Save book",
+  "bookstealer.button.save.text.rude": "Make this shit my!",
+  "bookstealer.text.save.done": "Book saved as",
+  "bookstealer.text.save.empty": "Book is empty!",
+  "bookstealer.text.save.error": "Book cant' be saved! See log for more info...",
+  "text.autoconfig.bookstealer.option.rudeText": "Rude text",
+  "text.autoconfig.bookstealer.option.saveDir": "Book save directory",
+  "text.autoconfig.bookstealer.option.bookFileFormat": "Book file pattern",
+  "text.autoconfig.bookstealer.option.dateFormat": "Date format",
+  "modmenu.descriptionTranslation.bookstealer": "Minecraft client mod for book content saving."
+}

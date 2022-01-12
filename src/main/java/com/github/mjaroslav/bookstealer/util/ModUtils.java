@@ -2,10 +2,13 @@ package com.github.mjaroslav.bookstealer.util;
 
 import com.github.mjaroslav.bookstealer.BookStealerMod;
 import lombok.val;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.LecternScreen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.item.Items;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,25 +20,47 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ModUtils {
-    public static void addChatMessage(@NotNull ITextComponent message) {
-        val player = Minecraft.getMinecraft().player;
-        if (player != null) player.sendMessage(message);
+    public static void addChatMessage(@NotNull Text message) {
+        val player = MinecraftClient.getInstance().player;
+        if (player != null) player.sendMessage(message, false);
+    }
+
+    @Nullable
+    public static ItemStack getBookStackForScreen(Screen requester) {
+        if (requester instanceof LecternScreen) {
+            val lecternScreen = (LecternScreen) requester;
+            return lecternScreen.getScreenHandler().getBookItem();
+        } else {
+            val player = MinecraftClient.getInstance().player;
+            if (player == null)
+                return null;
+            val mainStack = player.getMainHandStack();
+            val offStack = player.getOffHandStack();
+            return isStackABook(mainStack) ? mainStack : isStackABook(offStack) ? offStack : null;
+        }
+    }
+
+    private static boolean isStackABook(@NotNull ItemStack stack) {
+        return stack.getItem() == Items.WRITABLE_BOOK || stack.getItem() == Items.WRITTEN_BOOK;
     }
 
     public static void overrideConfigValues() {
-        val session = Minecraft.getMinecraft().getSession();
+        val session = MinecraftClient.getInstance().getSession();
         val username = session.getUsername();
-        if ("MJaroslav".equals(username)) BookStealerMod.getConfig().setRudeText(true);
+        if ("MJaroslav".equals(username)) {
+            BookStealerMod.getConfig().setRudeText(true);
+            BookStealerMod.getConfigHolder().save();
+        }
     }
 
     @NotNull
-    public static String getButtonTranslatedText() {
-        return I18n.format("bookstealer.button.save.text" + (BookStealerMod.getConfig().isRudeText() ? ".rude" : ""));
+    public static Text getButtonTranslatedText() {
+        return new TranslatableText("bookstealer.button.save.text" + (BookStealerMod.getConfig().isRudeText() ? ".rude" : ""));
     }
 
     @NotNull
     private static String getMinecraftDir() {
-        return Minecraft.getMinecraft().gameDir.toString();
+        return MinecraftClient.getInstance().runDirectory.toString();
     }
 
     @NotNull
@@ -58,19 +83,19 @@ public class ModUtils {
     @Nullable
     public static Path saveBook(@Nullable ItemStack book) throws Exception {
         if (book == null) return null;
-        val nbt = book.getTagCompound();
+        val nbt = book.getTag();
         if (nbt == null) return null;
-        val author = !nbt.hasKey("author", 8) ? "Unknown" : nbt.getString("author");
-        val title = !nbt.hasKey("title", 8) ? "Unknown" : nbt.getString("title");
+        val author = !nbt.contains("author", 8) ? "Unknown" : nbt.getString("author");
+        val title = !nbt.contains("title", 8) ? "Unknown" : nbt.getString("title");
         val path = getBookPath(author, title);
         val builder = new StringBuilder();
-        if (nbt.hasKey("pages", 9)) {
-            val list = nbt.getTagList("pages", 8);
-            for (int i = 0; i < list.tagCount(); i++)
-                builder.append("\n").append(list.getStringTagAt(i));
+        if (nbt.contains("pages", 9)) {
+            val list = nbt.getList("pages", 8);
+            for (int i = 0; i < list.size(); i++)
+                builder.append("\n\n").append(list.getString(i));
         }
         val text = builder.length() == 0 ? "\nBook is empty!" : builder.toString();
-        FileUtils.write(path.toFile(), String.format("Title: %s\nAuthor: %s\nPages NBT:%s", title, author, text),
+        FileUtils.write(path.toFile(), String.format("Title: %s\nAuthor: %s%s", title, author, text),
                 StandardCharsets.UTF_8);
         return path;
     }

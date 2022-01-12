@@ -1,9 +1,0 @@
-bookstealer.button.save.text=Save book
-bookstealer.button.save.text.rude=Make this shit my!
-bookstealer.text.save.done=Book saved as
-bookstealer.text.save.empty=Book is empty!
-bookstealer.text.save.error=Book cant' be saved! See log for more info...
-bookstealer.config.rude_text=Rude text
-bookstealer.config.save_dir=Book save directory
-bookstealer.config.book_file_format=Book file pattern
-bookstealer.config.date_format=Date format

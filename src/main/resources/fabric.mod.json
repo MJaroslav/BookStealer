@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "bookstealer",
+  "version": "${version}",
+
+  "name": "BookStealer",
+  "description": "Minecraft client mod for book content saving.",
+  "authors": [
+    "MJaroslav"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/bookstealer",
+    "sources": "https://github.com/MJaroslav/BookStealer",
+    "issues": "https://github.com/MJaroslav/BookStealer/issues"
+  },
+  "license": "WTFPL-2",
+  "icon": "assets/bookstealer/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.github.mjaroslav.bookstealer.BookStealerMod"
+    ],
+    "modmenu": [
+      "com.github.mjaroslav.bookstealer.integration.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "bookstealer.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  }
+}

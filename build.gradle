@@ -1,30 +1,23 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-        maven {
-            name 'forge'
-            url 'https://maven.minecraftforge.net/'
-        }
-        maven {
-            name = "github"
-            url = "https://github.com/juanmuscaria/maven/raw/master"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle2:[2.3-1.0.0-SNAPSHOT,)'
-    }
+plugins {
+    id 'idea'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'maven-publish'
 }
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'net.minecraftforge.gradle.forge'
 
 def modprop = new Properties()
 file("mod.properties").withInputStream { modprop.load(it) }
 
 def buildprop = new Properties()
 file("build.properties").withInputStream { buildprop.load(it) }
+
+repositories {
+	maven {
+		url "https://maven.shedaniel.me/"
+	}
+	maven {
+		url "https://maven.terraformersmc.com/"
+	}
+}
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
@@ -33,14 +26,19 @@ version = "${buildprop.game_version}-${modprop.version}"
 group = modprop.group
 archivesBaseName = modprop.name
 
-minecraft {
-    version = "${buildprop.game_version}-${buildprop.forge_version}"
-    runDir = buildprop.run_dir
-    replace '@VERSION@', project.version
-    mappings = buildprop.mappings
-}
-
 dependencies {
+	minecraft "com.mojang:minecraft:${buildprop.game_version}"
+	mappings "net.fabricmc:yarn:${buildprop.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${buildprop.fabric_loader_version}"
+    
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${buildprop.fabric_version}"
+
+	modApi("me.shedaniel.cloth:cloth-config-fabric:${buildprop.cloth_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	modImplementation "com.terraformersmc:modmenu:${buildprop.menu_version}"
+
     compile "org.jetbrains:annotations:${buildprop.jba_version}"
 
     compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
@@ -51,41 +49,27 @@ dependencies {
 }
 
 processResources {
-    // mcmod.info expand don't work with EXCLUDE option
-    // duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    includeEmptyDirs = false
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', project.minecraft.version
+	inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
 }
 
-task devJar(type: Jar) {
-    classifier = 'dev'
-    from sourceSets.main.output
+tasks.withType(JavaCompile).configureEach {
+	def targetVersion = 8
+	if (JavaVersion.current().isJava9Compatible()) {
+		 it.options.release = targetVersion
+	}
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+java {
+	withSourcesJar()
 }
 
-artifacts {
-    archives devJar
-    archives sourcesJar
-}
 
-tasks.withType(Jar)*.doFirst {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    includeEmptyDirs = false
-    if (name == "jar" || name == "devJar" || name == "sourcesJar")
-        manifest {
-            attributes "FMLAT": "${modprop.name}_at.cfg"
-        }
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
 }

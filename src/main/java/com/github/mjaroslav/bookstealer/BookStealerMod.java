@@ -1,36 +1,30 @@
 package com.github.mjaroslav.bookstealer;
 
-import com.github.mjaroslav.bookstealer.config.Config;
-import com.github.mjaroslav.bookstealer.event.EventHandler;
+import com.github.mjaroslav.bookstealer.config.ModConfig;
 import com.github.mjaroslav.bookstealer.lib.ModInfo;
-import com.github.mjaroslav.bookstealer.util.ModUtils;
 import lombok.Getter;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
+import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import net.fabricmc.api.ClientModInitializer;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = ModInfo.MOD_ID, name = ModInfo.NAME, version = ModInfo.VERSION,
-        guiFactory = ModInfo.GUI_FACTORY, clientSideOnly = true
-)
-public class BookStealerMod {
+public class BookStealerMod implements ClientModInitializer {
     @Getter
-    private static Config config;
+    private static ModConfig config;
+    @Getter
+    private static ConfigHolder<ModConfig> configHolder;
+
     @Getter
     private static Logger log;
 
-    @Mod.EventHandler
-    public void onFMLPreInitializationEvent(FMLPreInitializationEvent event) {
-        log = event.getModLog();
+    @Override
+    public void onInitializeClient() {
+        log = LogManager.getLogger(ModInfo.NAME);
         log.info("Sup, 2ch.hk!");
-        config = new Config(event.getSuggestedConfigurationFile());
-        config.loadConfiguration();
-        ModUtils.overrideConfigValues();
-    }
-
-    @Mod.EventHandler
-    public void onFMLInitializationEvent(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(EventHandler.INSTANCE);
+        AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
+        configHolder = AutoConfig.getConfigHolder(ModConfig.class);
+        config = configHolder.getConfig();
     }
 }

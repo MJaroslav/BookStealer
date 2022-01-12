@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.mjaroslav.bookstealer.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "BookEditScreenMixin",
+    "BookScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
