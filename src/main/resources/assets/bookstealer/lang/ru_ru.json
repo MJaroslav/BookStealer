@@ -4,6 +4,7 @@
   "bookstealer.text.save.done": "Книга сохранена как",
   "bookstealer.text.save.empty": "Книга пуста!",
   "bookstealer.text.save.error": "Не удается сохранить книгу! Смотрите журнал для подробной информации...",
+  "bookstealer.text.save.lectern": "Книги на кафедрах не поддерживаются модом!",
   "text.autoconfig.bookstealer.option.rudeText": "Грубый текст",
   "text.autoconfig.bookstealer.option.saveDir": "Директория сохрарения книг",
   "text.autoconfig.bookstealer.option.bookFileFormat": "Шаблон файла книги",

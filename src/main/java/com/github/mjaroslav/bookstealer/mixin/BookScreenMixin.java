@@ -19,7 +19,7 @@ public abstract class BookScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     public void init(CallbackInfo ci) {
-        this.addButton(new ButtonWidget(this.width / 2 - 100, 212, 200, 20,
-                ModUtils.getButtonTranslatedText(), new SaveAction(ModUtils.getBookStackForScreen())));
+        this.addButton(new ButtonWidget(this.width / 2 - 100, 220, 200, 20,
+                ModUtils.getButtonTranslatedText(), new SaveAction(this, ModUtils.getBookStackFromHands())));
     }
 }

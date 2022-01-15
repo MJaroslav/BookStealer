@@ -4,6 +4,7 @@
   "bookstealer.text.save.done": "Book saved as",
   "bookstealer.text.save.empty": "Book is empty!",
   "bookstealer.text.save.error": "Book cant' be saved! See log for more info...",
+  "bookstealer.text.save.lectern": "Books on lecterns don't support by the mod!",
   "text.autoconfig.bookstealer.option.rudeText": "Rude text",
   "text.autoconfig.bookstealer.option.saveDir": "Book save directory",
   "text.autoconfig.bookstealer.option.bookFileFormat": "Book file pattern",
