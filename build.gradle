@@ -1,6 +1,6 @@
 plugins {
     id 'idea'
-	id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -30,16 +30,13 @@ dependencies {
 	minecraft "com.mojang:minecraft:${buildprop.game_version}"
 	mappings "net.fabricmc:yarn:${buildprop.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${buildprop.fabric_loader_version}"
-    
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${buildprop.fabric_version}"
 
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${buildprop.cloth_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${buildprop.cloth_version}"
+    include "me.shedaniel.cloth:cloth-config-fabric:${buildprop.cloth_version}"
 
 	modImplementation "com.terraformersmc:modmenu:${buildprop.menu_version}"
 
-    compile "org.jetbrains:annotations:${buildprop.jba_version}"
+    implementation "org.jetbrains:annotations:${buildprop.jba_version}"
 
     compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
@@ -64,7 +61,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	withSourcesJar()
+	//withSourcesJar()
 }
 
 

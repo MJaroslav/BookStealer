@@ -46,7 +46,7 @@ public class SaveAction implements ButtonWidget.PressAction {
                 ModUtils.addChatMessage(message);
             }
         } catch (Exception e) {
-            BookStealerMod.getLog().warn("Can't save book!", e);
+            BookStealerMod.warn("Can't save book!", e);
             val message = new TranslatableText("bookstealer.text.save.error");
             val style = message.getStyle().withColor(Formatting.RED);
             message.setStyle(style);
