@@ -20,5 +20,5 @@ See LICENSE
 Anonymous request from [2ch.hk/mc/](https://2ch.hk/mc/)
 
 ## Links
-[curseforge.com](https://www.curseforge.com/minecraft/mc-mods/bookstealer)
+[curseforge.com](https://www.curseforge.com/minecraft/mc-mods/bookstealer) \
 [forum.mcmodding.ru](https://forum.mcmodding.ru/resources/bookstealer.275/)

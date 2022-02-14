@@ -78,7 +78,7 @@ public class ModUtils {
     @Nullable
     public Path saveBook(@Nullable ItemStack book) throws Exception {
         if (book == null) return null;
-        val nbt = book.getTag();
+        val nbt = book.getNbt();
         if (nbt == null) return null;
         val author = !nbt.contains("author", 8) ? "Unknown" : nbt.getString("author");
         val title = !nbt.contains("title", 8) ? "Unknown" : nbt.getString("title");

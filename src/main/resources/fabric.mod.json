@@ -29,10 +29,10 @@
   ],
   "depends": {
     "fabricloader": ">=0.12.12",
-    "minecraft": "1.16.x",
-    "cloth-config2": ">=4.13.49"
+    "minecraft": "1.18.x",
+    "cloth-config2": ">=6.1.48"
   },
   "suggests": {
-    "modmenu": ">=1.16.22"
+    "modmenu": ">=3.0.1"
   }
 }

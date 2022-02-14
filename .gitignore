@@ -23,5 +23,6 @@ build
 # Other
 logs/
 log/
-gradle.properties
 run/
+*.hprof
+java_pid*/

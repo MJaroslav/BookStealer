@@ -24,7 +24,7 @@ public abstract class BookEditScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void init(CallbackInfo ci) {
-        this.addButton(new ButtonWidget(this.width / 2 - 100, 220, 200, 20,
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, 220, 200, 20,
                 ModUtils.getButtonTranslatedText(), new SaveAction(this, itemStack)));
     }
 }
