@@ -8,8 +8,7 @@ import net.minecraft.client.gui.screen.ingame.LecternScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +23,7 @@ public class SaveAction implements ButtonWidget.PressAction {
     @Override
     public void onPress(ButtonWidget button) {
         if (parent instanceof LecternScreen) {
-            val message = new TranslatableText("bookstealer.text.save.lectern");
+            val message = Text.translatable("bookstealer.text.save.lectern");
             message.setStyle(message.getStyle().withColor(Formatting.YELLOW));
             ModUtils.addChatMessage(message);
             return;
@@ -32,14 +31,14 @@ public class SaveAction implements ButtonWidget.PressAction {
         try {
             val result = ModUtils.saveBook(itemStack);
             if (result == null) {
-                val message = new TranslatableText("bookstealer.text.save.empty");
+                val message = Text.translatable("bookstealer.text.save.empty");
                 message.setStyle(message.getStyle().withColor(Formatting.YELLOW));
                 ModUtils.addChatMessage(message);
             } else {
-                val message = new TranslatableText("bookstealer.text.save.done")
+                val message = Text.translatable("bookstealer.text.save.done")
                         .append(" ");
                 message.setStyle(message.getStyle().withColor(Formatting.GREEN));
-                val fileComponent = new LiteralText(result.getFileName().toString());
+                val fileComponent = Text.literal(result.getFileName().toString());
                 fileComponent.setStyle(fileComponent.getStyle().withColor(Formatting.GREEN).withUnderline(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, result.toAbsolutePath()
                         .toString())));
                 message.append(fileComponent);
@@ -47,7 +46,7 @@ public class SaveAction implements ButtonWidget.PressAction {
             }
         } catch (Exception e) {
             BookStealerMod.warn("Can't save book!", e);
-            val message = new TranslatableText("bookstealer.text.save.error");
+            val message = Text.translatable("bookstealer.text.save.error");
             val style = message.getStyle().withColor(Formatting.RED);
             message.setStyle(style);
             ModUtils.addChatMessage(message);
