@@ -4,6 +4,8 @@ import com.github.mjaroslav.bookstealer.lib.ModInfo;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lombok.Getter;
 import lombok.val;
 import net.minecraftforge.common.config.ConfigElement;
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.File;
 
+@SideOnly(Side.CLIENT)
 public class Config {
     @Getter
     private final Configuration cfg;
