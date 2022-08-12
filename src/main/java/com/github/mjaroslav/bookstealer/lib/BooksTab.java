@@ -90,7 +90,11 @@ public class BooksTab extends CreativeTabs {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void writeToNBT(@NotNull List<ItemStack> books) throws IOException {
+        val parent = getFilePath().getParent().toFile();
+        if (!parent.isDirectory())
+            parent.mkdirs();
         val file = getFilePath().toFile();
         val root = new NBTTagCompound();
         val list = new NBTTagList();

@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenCentral()
         maven {
             name 'jitpack'
             url 'https://jitpack.io'
@@ -9,9 +8,10 @@ buildscript {
             name = "github"
             url = "https://github.com/juanmuscaria/maven/raw/master"
         }
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.github.MJaroslav:ForgeGradle:FG_1.2-patch-1-SNAPSHOT' // Temporary
+        classpath 'net.minecraftforge.gradle:ForgeGradle:[1.2-1.4.6-SNAPSHOT,)'
     }
 }
 
@@ -31,22 +31,41 @@ repositories {
     mavenCentral()
 }
 
-apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'java'
 apply plugin: 'forge'
 
-def modprop = new Properties()
-file("mod.properties").withInputStream { modprop.load(it) }
+idea.module.inheritOutputDirs = true
 
 def buildprop = new Properties()
 file("build.properties").withInputStream { buildprop.load(it) }
 
+version = buildprop.version
+group = buildprop.group
+archivesBaseName = project.name
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = "${buildprop.game_version}-${modprop.version}"
-group = modprop.group
-archivesBaseName = modprop.name
+task devJar(type: Jar) {
+    classifier('dev')
+    from sourceSets.main.output
+}
+
+task sourceJar(type: Jar, dependsOn:classes) {
+    classifier('sources')
+    from sourceSets.main.allJava
+}
+
+artifacts {
+    archives sourceJar, devJar
+}
+
+configurations {
+    shade
+
+    compile.extendsFrom(shade)
+}
 
 minecraft {
     version = "${buildprop.game_version}-${buildprop.forge_version}-${buildprop.game_version}"
@@ -59,7 +78,8 @@ dependencies {
     compile "codechicken:CodeChickenCore:${buildprop.ccc_version}:dev"
     compile "codechicken:NotEnoughItems:${buildprop.nei_version}:dev"
     compile "mcp.mobius.waila:Waila:${buildprop.waila_version}"
-    compile "org.jetbrains:annotations:${buildprop.jba_version}"
+
+    compileOnly "org.jetbrains:annotations:${buildprop.jetbrains_annotations_version}"
 
     compileOnly "org.projectlombok:lombok:${buildprop.lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${buildprop.lombok_version}"
@@ -69,12 +89,8 @@ dependencies {
 }
 
 processResources {
-    // mcmod.info expand don't work with EXCLUDE option
-    // duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    includeEmptyDirs = false
     inputs.property 'version', project.version
     inputs.property 'mcversion', project.minecraft.version
-
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand 'version': project.version, 'mcversion': project.minecraft.version
@@ -84,26 +100,19 @@ processResources {
     }
 }
 
-task devJar(type: Jar) {
-    classifier = 'dev'
-    from sourceSets.main.output
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives devJar
-    archives sourcesJar
-}
-
 tasks.withType(Jar)*.doFirst {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    includeEmptyDirs = false
-    if (name == "jar" || name == "devJar" || name == "sourcesJar")
-        manifest {
-            attributes "FMLAT": "${modprop.name}_at.cfg"
+    if ((name == "jar" || name == "devJar" || name == "sourcesJar")) {
+		manifest {
+			attributes "FMLAT": "${project.name.replace(" ", "").toLowerCase()}_at.cfg"
+		}
+		if (buildprop.coremod.toBoolean())
+			manifest {
+				// TODO: Don't forged about -Dfml.coreMods.load
+				attributes "FMLCorePlugin": "${project.group}.${project.name.replace(" ", "").toLowerCase()}.asm.${project.name.replace(" ", "")}Plugin"
+				attributes "FMLCorePluginContainsFMLMod": "true"
+			}
+        configurations.shade.each { dep ->
+            from project.zipTree(dep)
         }
+    }
 }

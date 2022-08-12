@@ -8,9 +8,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import lombok.val;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +47,7 @@ public class CommandBookStealer extends CommandBase {
                         BooksTab.removeAll();
                         ModUtils.addChatMessage(ModUtils.makeTranslatedAndColoredComponent(GREEN,
                                 "command.bookstealer.tab.clear.done"));
-                    } else if (args[1].equals("remove")) {
+                    } else if (args.length >= 2 && args[1].equals("remove")) {
                         if (args.length == 3) {
                             if (BooksTab.size() > 0) {
                                 val index = parseIntBounded(sender, args[2], 1, BooksTab.size());
@@ -65,15 +66,15 @@ public class CommandBookStealer extends CommandBase {
                             else
                                 ModUtils.addChatMessage(ModUtils.makeTranslatedAndColoredComponent(YELLOW,
                                         "command.bookstealer.tab.remove.null"));
-                        } else throw new CommandException(getCommandUsage(sender) + ".tab");
-                    } else throw new CommandException(getCommandUsage(sender) + ".tab");
+                        } else throw new WrongUsageException(I18n.format(getCommandUsage(sender) + ".tab"));
+                    } else throw new WrongUsageException(I18n.format(getCommandUsage(sender) + ".tab"));
                 } catch (IOException e) {
                     BookStealerMod.getLog().error("Can't save " + BooksTab.getFilePath(), e);
                     ModUtils.addChatMessage(ModUtils.makeTranslatedAndColoredComponent(YELLOW,
                             "command.bookstealer.tab.error"));
                 }
             }
-        } else throw new CommandException(getCommandUsage(sender));
+        } else throw new WrongUsageException(I18n.format(getCommandUsage(sender)));
     }
 
     @SuppressWarnings("rawtypes")
